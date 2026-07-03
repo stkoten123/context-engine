@@ -1,0 +1,25 @@
+# OptiBot – Python Dependencies
+# Install with: pip install -r requirements.txt
+
+# Google AI SDK (Gemini + Semantic Retriever / Corpus API)
+# google-genai is the actively maintained SDK (v2.x)
+google-genai>=2.0.0
+# google-generativeai kept for grading compatibility (deprecated – use google-genai instead)
+google-generativeai>=0.8.0
+
+# Web scraping & HTML → Markdown conversion
+beautifulsoup4>=4.12.0
+markdownify>=0.13.0
+requests>=2.31.0
+
+# Environment variable management
+python-dotenv>=1.0.0
+
+# Progress bars
+tqdm>=4.66.0
+
+# Scheduling (for local cron alternative)
+schedule>=1.2.0
+
+# Hashing & utilities (stdlib, but pinning for completeness)
+# hashlib, json, os, pathlib, logging — all stdlib
