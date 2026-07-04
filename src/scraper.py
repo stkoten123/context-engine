@@ -176,13 +176,14 @@ def run_scraper(output_dir: str = "data/scraped_articles") -> list[dict]:
 
     articles = fetch_all_articles()
     
-    # Handle MAX_ARTICLES limit if set
-    max_articles_env = os.environ.get("MAX_ARTICLES")
+    # Handle article limit – supports both SCRAPER_MAX_ARTICLES (config.py) and MAX_ARTICLES
+    max_articles_env = os.environ.get("SCRAPER_MAX_ARTICLES") or os.environ.get("MAX_ARTICLES")
     if max_articles_env:
         try:
             limit = int(max_articles_env)
-            articles = articles[:limit]
-            logger.info("Limiting scraper to %d articles due to MAX_ARTICLES=%d", limit, limit)
+            if limit > 0:
+                articles = articles[:limit]
+                logger.info("Limiting scraper to %d articles (SCRAPER_MAX_ARTICLES)", limit)
         except ValueError:
             pass
 
