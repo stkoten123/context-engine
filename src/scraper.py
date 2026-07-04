@@ -113,11 +113,16 @@ def html_to_markdown(html: str, article_url: str) -> str:
     for element in soup(["script", "style", "nav"]):
         element.decompose()
 
-    # Convert relative links and image src to absolute
+    # Convert relative links and image src to absolute, and strip base64 image data
     for a in soup.find_all("a", href=True):
         a["href"] = urljoin(article_url, a["href"])
     for img in soup.find_all("img", src=True):
-        img["src"] = urljoin(article_url, img["src"])
+        src = img["src"]
+        if src.startswith("data:image/"):
+            # Remove or replace base64 source with a placeholder to keep payload light
+            img.decompose()
+        else:
+            img["src"] = urljoin(article_url, src)
 
     # Convert to Markdown
     raw_md = md(
