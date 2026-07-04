@@ -52,9 +52,12 @@ CORPUS_NAME: str = os.environ.get("CORPUS_NAME", "optisigns_support_corpus")
 OPTISIGNS_HELP_BASE_URL: str = "https://support.optisigns.com"
 ZENDESK_API_BASE: str = f"{OPTISIGNS_HELP_BASE_URL}/api/v2/help_center"
 
-# Paths
-DATA_DIR: Path = _PROJECT_ROOT / "data" / "scraped_articles"
-STATE_FILE: Path = _PROJECT_ROOT / "state.json"
+# Paths (Supports Railway Persistent Volumes)
+# If a persistent volume is mounted at /data, use it; otherwise default to local project root
+_PERSISTENT_BASE = Path("/data") if Path("/data").is_dir() else _PROJECT_ROOT
+
+DATA_DIR: Path = _PERSISTENT_BASE / "data" / "scraped_articles"
+STATE_FILE: Path = _PERSISTENT_BASE / "state.json"
 
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
