@@ -5,10 +5,19 @@ Calls main() directly (no subprocess) so every log line streams
 in real-time to Railway / Render log collectors.
 """
 
+import sys
+import logging
+from pathlib import Path
+from datetime import datetime, timezone
+
+# Ensure project root is on sys.path so "import main" works when
+# Railway runs this as: python src/cron.py
+_ROOT = Path(__file__).resolve().parent.parent
+if str(_ROOT) not in sys.path:
+    sys.path.insert(0, str(_ROOT))
+
 import schedule
 import time
-import logging
-from datetime import datetime, timezone
 
 # ---------------------------------------------------------------------------
 # Logging – force unbuffered stdout so Railway sees every line immediately
