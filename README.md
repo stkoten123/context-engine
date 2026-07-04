@@ -26,27 +26,7 @@ Log format: "added X, updated Y, skipped Z"
 
 ## Daily Job Logs
 - Railway Cron Job: [https://railway.app/](https://railway.app/) (Runs daily at `0 2 * * *` UTC)
-- Job Logs: [https://railway.app/](https://railway.app/) (Replace with your actual Railway job logs URL after connecting your repository)
+- Job Logs: https://railway.com/project/a14c0861-7dda-4742-804b-884758ac0838/service/33036b2d-9a6b-466e-a130-2e637687a9e7?environmentId=e9afd600-42da-47b9-a58c-f0af35b39e44&id=eb8bcf49-f836-4ed3-bee1-5c8a6d04fbd4#deploy
 
 ## Screenshot
-Below is the CLI chat transcript demonstration of OptiBot answering the question with the required source URL citation:
-
-```
-🤖  OptiBot – OptiSigns AI Support Assistant (File Search Store)
-    Type 'exit' or Ctrl-C to quit.
-
-You: How do I add a YouTube video?
-
-OptiBot is thinking...
-
-OptiBot: To add a YouTube video to OptiSigns, follow these steps:
-
-*   Log in to the OptiSigns portal at http://app.optisigns.com/.
-*   Navigate to "Files/Assets" and click on "App".
-*   Select "YouTube" (or "YouTube Live").
-*   Enter a name for your video and paste the actual YouTube video URL into the "URL" field.
-*   For YouTube Shorts, change /shorts/ in the URL to /embed/ (e.g., https://youtube.com/shorts/BUXczOFByAU becomes https://youtube.com/embed/BUXczOFByAU).
-*   Click "Save".
-
-Article URL: https://support.optisigns.com/hc/en-us/articles/360051014713-How-to-use-YouTube-with-OptiSigns
-```
+![alt text](image.png)
