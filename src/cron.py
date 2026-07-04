@@ -1,56 +1,69 @@
 """
 src/cron.py – OptiBot Daily Cron Scheduler
-Runs main.py sync pipeline daily at 02:00 UTC (or local time).
-Useful for deploying on platforms like Render or Railway.
+Runs the sync pipeline daily at 02:00 UTC.
+Calls main() directly (no subprocess) so every log line streams
+in real-time to Railway / Render log collectors.
 """
 
 import schedule
 import time
-import subprocess
-import sys
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
+# ---------------------------------------------------------------------------
+# Logging – force unbuffered stdout so Railway sees every line immediately
+# ---------------------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] cron – %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
+    format="%(asctime)s [%(levelname)s] %(name)s – %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    force=True,
 )
 logger = logging.getLogger("optibot.cron")
 
 
-def run_sync():
-    logger.info("Starting scheduled delta sync pipeline...")
+def run_sync() -> None:
+    """
+    Execute the full delta-sync pipeline in-process.
+    Calling main() directly (instead of subprocess) means every INFO/ERROR
+    line is written to stdout immediately – exactly what Railway captures.
+    """
+    start = datetime.now(timezone.utc)
+    logger.info("=" * 55)
+    logger.info("OptiBot delta sync started at %s", start.isoformat())
+    logger.info("=" * 55)
+
     try:
-        # Run main.py as a subprocess to keep environments isolated and clean
-        result = subprocess.run(
-            [sys.executable, "main.py"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        logger.info("Sync pipeline output:\n%s", result.stdout)
-        logger.info("Delta sync pipeline completed successfully at %s", datetime.now().isoformat())
-    except subprocess.CalledProcessError as err:
-        logger.error("Sync pipeline failed with exit code %d", err.returncode)
-        logger.error("Error output:\n%s", err.stderr)
+        # Import here so cron.py can be imported without triggering pipeline
+        from main import main as pipeline
+
+        exit_code = pipeline()
+
+        elapsed = (datetime.now(timezone.utc) - start).total_seconds()
+        if exit_code == 0:
+            logger.info("Delta sync COMPLETED successfully in %.1fs ✅", elapsed)
+        else:
+            logger.error("Delta sync exited with code %d after %.1fs ❌", exit_code, elapsed)
+
     except Exception as exc:
-        logger.error("An unexpected error occurred during sync: %s", exc)
+        elapsed = (datetime.now(timezone.utc) - start).total_seconds()
+        logger.exception("Delta sync FAILED after %.1fs: %s ❌", elapsed, exc)
 
 
-def start_scheduler():
-    logger.info("OptiBot Scheduler started. Sync job scheduled daily at 02:00 UTC.")
-    
-    # Schedule job daily at 02:00
-    schedule.every().day.at("02:00").do(run_sync)
-    
-    # Run once immediately on startup to verify setup and fetch delta
-    logger.info("Running initial delta sync on startup...")
+def start_scheduler() -> None:
+    logger.info("OptiBot Scheduler started – daily job at 02:00 UTC.")
+
+    # Run once immediately on boot so the first Railway log shows real output
+    logger.info("Running initial sync on startup …")
     run_sync()
+
+    # Schedule subsequent daily runs
+    schedule.every().day.at("02:00").do(run_sync)
+    logger.info("Next run scheduled for 02:00 UTC. Entering wait loop …")
 
     while True:
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(60)   # check every minute; very low CPU overhead
 
 
 if __name__ == "__main__":
