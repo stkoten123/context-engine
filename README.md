@@ -29,4 +29,5 @@ Log format: "added X, updated Y, skipped Z"
 - Job Logs: https://railway.com/project/a14c0861-7dda-4742-804b-884758ac0838/service/33036b2d-9a6b-466e-a130-2e637687a9e7?environmentId=e9afd600-42da-47b9-a58c-f0af35b39e44&id=eb8bcf49-f836-4ed3-bee1-5c8a6d04fbd4#deploy
 
 ## Screenshot
-![alt text](image.png)
+<img width="1412" height="905" alt="image" src="https://github.com/user-attachments/assets/bc8a47ff-fcd1-4a82-bfb8-42ecc0f8743c" />
+
