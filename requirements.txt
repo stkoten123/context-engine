@@ -23,3 +23,6 @@ schedule>=1.2.0
 
 # Hashing & utilities (stdlib, but pinning for completeness)
 # hashlib, json, os, pathlib, logging — all stdlib
+
+# Testing
+pytest>=8.0.0
